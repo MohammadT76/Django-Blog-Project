@@ -4,12 +4,9 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
-# Ignore local development settings
-local_settings.py
-
-# Ignore database files
-*/db.sqlite3
+*.sqlite3
+migrations
+*.obsidian
 
 # Ignore environment-specific settings (customize this as needed)
 .env
@@ -17,6 +14,3 @@ local_settings.py
 
 # Ignore log files
 *.log
-
-# Ignore temporary files
-*.swp
