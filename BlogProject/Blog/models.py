@@ -6,7 +6,9 @@ from django.contrib.auth.models import User
 
 class Post(models.Model):
     title   = models.CharField(max_length=300)
-    slug    = models.SlugField(max_length=300)
+    slug    = models.SlugField(max_length=300,
+                               help_text='Slug is a field in autocomplete mode, but if you want you can modify its contents',
+                               verbose_name='Slug',unique=True)
     body    = models.TextField()
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)

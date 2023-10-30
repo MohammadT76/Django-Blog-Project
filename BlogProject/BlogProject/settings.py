@@ -27,7 +27,7 @@ DEBUG = True
 
 # for more information see this link : 
 # https://stackoverflow.com/questions/57545934/you-may-need-to-add-u127-0-0-1-to-allowed-hosts
-ALLOWED_HOSTS = ['127.0.0.1','127.1.1.3']
+ALLOWED_HOSTS = ['localhost','127.0.0.1','127.1.1.3']
 
 
 # Application definition

@@ -214,7 +214,51 @@ python manage.py migrate
 ```ehell
 python manage.py createsuperuser
 ```
+## Adding models to the administration site
 
+- Edit the `admin.py` file in your app : 
+
+```python
+from django.contrib import admin  
+from .models import Post  
+
+admin.site.register(Post)
+```
+
+### Customizing how models are displayed
+
+```python
+from django.contrib import admin
+from .models import Post
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display        = ['title', 'slug', 'author', 'publish', 'status']
+    list_filter         = ['status', 'created', 'publish', 'author']
+    search_fields       = ['title', 'body']
+    prepopulated_fields = {'slug': ('title',)}
+    raw_id_fields       = ['author']
+    date_hierarchy      = 'publish'
+    ordering            = ['status', 'publish']
+```
+
+- The `@admin.register()` ==`decorator`== performs the same function as the `admin.site.register()` function that you replaced, registering the `ModelAdmin class` that it decorates.
+- ==**`prepopulated_fields`**== doesn’t accept ==`DateTimeField`==, ==**`ForeignKey`**==, ==**`OneToOneField`**==, and ==**`ManyToManyField`**== fields.
+
+### Another way to register your model in Admin site
+
+```python
+class PostAdmin(admin.ModelAdmin):
+    list_display = ["id", "__str__", "publishing_date", "updating_date", "category",  "highlighted"]
+    list_filter = ["publishing_date"]
+    search_fields = ["title", "short_description", "contents", "keyconcept", "category"]
+    prepopulated_fields = {"slug": ("title", "keyconcept", "category",)}
+
+    class Meta:
+        model = Post
+
+admin.site.register(Post, PostAdmin)
+```
 
 # Some issues
 - [You may need to add u'127.0.0.1' to ALLOWED_HOSTS](https://stackoverflow.com/questions/57545934/you-may-need-to-add-u127-0-0-1-to-allowed-hosts)
@@ -223,4 +267,6 @@ python manage.py createsuperuser
 # Resources
 
 - [Django 4 By Example](Django/source_file/Django_4_By_Example_Fourth_Edition_page61.pdf)
+- [How to show all fields of model in admin page?](https://stackoverflow.com/questions/10543032/how-to-show-all-fields-of-model-in-admin-page)
+- [More of one prepopulated_fields for django admin](https://stackoverflow.com/questions/52247181/more-of-one-prepopulated-fields-for-django-admin)
 - 
