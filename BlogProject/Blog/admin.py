@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import Post
 
-
 # admin.site.register(Post)
 
 @admin.register(Post)
@@ -16,7 +15,8 @@ class PostAdmin(admin.ModelAdmin):
     search_fields       = ['title','body','slug']
     prepopulated_fields = {'slug' : ('title',)}
     date_hierarchy      = 'publish'
-    ordering            = ['status','publish']
+    ordering            = ['status','-publish']
 
-    # the author field is now displayed with a lookup widget,which can be much beĴer than a drop-down select input when you have thousands of users.
+    # the author field is now displayed with a lookup widget,which can be much better 
+    # than a drop-down select input when you have thousands of users.
     raw_id_fields       = ['author']

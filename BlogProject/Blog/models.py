@@ -2,7 +2,10 @@ from django.db                  import models
 from django.utils               import timezone
 from django.contrib.auth.models import User
 
-# Create your models here.
+# adding a customize manager for published post
+class PublishedManagerCustom(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status=Post.Status.published)
 
 class Post(models.Model):
     title   = models.CharField(max_length=300)
@@ -30,6 +33,13 @@ class Post(models.Model):
 
     status  = models.CharField(max_length=2,choices=Status.choices,default=Status.draft)
 
+    ########################## our model managers ##########################
+    # the default manager
+    objects_manager = models.Manager()
+    # our custom manager
+    published_manager = PublishedManagerCustom()
+    ##########################
+
     class Meta:
         ordering = ['-publish']
 
@@ -41,6 +51,7 @@ class Post(models.Model):
         db_table_comment = "User posts"
         # if you want changing the default table names , you can uncomment the following line.
         # db_table = "post_model"
+
 
     # when you call an object from this class , object's title shows
     def __str__(self):
