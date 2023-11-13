@@ -260,6 +260,111 @@ class PostAdmin(admin.ModelAdmin):
 admin.site.register(Post, PostAdmin)
 ```
 
+## ORM
+
+### What is `ORM` ?
+
+- The <mark style="background: #BBFABBA6;">Django object-relational mapper (ORM)</mark> is a powerful database abstraction API that lets you `create`, `retrieve`, `update`, and `delete` objects easily. 
+- An ORM allows you to generate SQL queries using the object-oriented paradigm of Python. You can think of it as a way to interact with your database in pythonic fashion instead of writing raw SQL queries. 
+- The ORM maps your models to database tables and provides you with a simple pythonic interface to interact with your database. The ORM generates SQL queries and maps the results to model objects. 
+- The Django ORM is compatible with <mark style="background: #BBFABBA6;">MySQL</mark>, <mark style="background: #BBFABBA6;">PostgreSQL</mark>, <mark style="background: #BBFABBA6;">SQLite</mark>, <mark style="background: #BBFABBA6;">Oracle</mark>, and <mark style="background: #BBFABBA6;">MariaDB</mark>.
+
+- <mark style="background: #FFB86CA6;">Note</mark> : Django can work with multiple databases at a time, and you can program database routers to create custom data routing schemes.
+
+### Examples
+
+- In the following example , we are retrieving the user object with the username admin :
+
+```python
+user = User.objects.get(username='admin')
+```
+
+- The <mark style="background: #BBFABBA6;">get()</mark> method allows you to retrieve a single object from the database. Note that this method expects a result that matches the query. If no results are returned by the database, this method will raise a <mark style="background: #FF5582A6;">DoesNotExist</mark> exception, and if the database returns more than one result, it will raise a <mark style="background: #FF5582A6;">MultipleObjectsReturned</mark> exception. Both exceptions are attributes of the model class that the query is being performed on.
+
+- You can create the object and persist it into the database in a single operation using the `create()` method , as follows :
+
+```python
+Post.objects.create(title  = 'One more post',  
+					slug   = 'one-more-post',  
+					body   = 'Post body.',  
+					author = user)
+```
+
+- <mark style="background: #FFB86CA6;">Note</mark> : The changes you make to a model object are not persisted to the database until you call the `save()` method.
+
+- To retrieve` all objects` from a table, we use the <mark style="background: #BBFABBA6;">all()</mark> method on the default objects manager, like this :
+
+```python
+all_posts = Post.objects.all()
+```
+
+- To filter a `QuerySet`, you can use the <mark style="background: #BBFABBA6;">filter()</mark> method of the manager. For example, you can retrieve all posts published in the year 2022 using the following `QuerySet` :
+
+```python
+Post.objects.filter(publish__year=2022)
+```
+
+```python
+Post.objects.filter(author__username__contains='moham') 
+```
+
+Note : Queries with field lookup methods are built using `two underscores`, for example, <mark style="background: #BBFABBA6;">publish__year</mark> , but the same notation is also used for accessing fields of related models, such as <mark style="background: #BBFABBA6;">author__username</mark>.
+
+- You can exclude certain results from your `QuerySet` using the <mark style="background: #BBFABBA6;"> exclude()</mark> method of the manager. For example, you can retrieve all posts published in 2022 whose titles don’t start with Why :
+
+```python
+Post.objects.filter(publish__year=2022).exclude(title__startswith='Why')
+```
+
+- You can order results by different fields using the <mark style="background: #BBFABBA6;">order_by()</mark> method of the manager. For example, you can retrieve all objects ordered by their title, as follows:
+
+```python
+Post.objects.order_by('title')
+```
+
+<mark style="background: #FFB86CA6;">Note</mark> : You can indicate descending order with a negative sign prefix, like this:
+
+```python
+Post.objects.order_by('-title')
+```
+
+another examples )
+
+```python
+post = Post.objects.get(id=1)  
+post.delete()
+```
+
+- <mark style="background: #FF5582A6;">Note</mark> : <mark style="background: #FFB86CA6;">that deleting objects will also delete any dependent relationships for ForeignKey objects defined with on_delete set to CASCADE.</mark>
+
+### When `QueySets` evaluate ? 
+
+<mark style="background: #BBFABBA6;">QuerySets</mark> are only evaluated in the following cases:  
+
+- The first time you iterate over them  
+- When you slice them, for instance, `Post.objects.all()[:3]`  
+- When you pickle or cache them  
+- When you call `repr() `or `len()` on them  
+- When you explicitly call list() on them  
+- When you test them in a statement, such as `bool()` , `or` , `and` , or `if`
+
+### Creating model managers
+
+- <mark style="background: #BBFABBA6;">The default manager for every model is the objects manager. This manager retrieves all the objects in the database</mark>.
+#### custom managers
+
+- There are `two` ways to add or customize managers for your models:
+1. you can add extra manager methods to an existing manager
+	- notation : <mark style="background: #BBFABBA6;">Post.objects.my_manager()</mark>
+2. create a new manager by modifying the initial `QuerySet` that the manager returns
+	- notation : <mark style="background: #BBFABBA6;">Post.objects.my_manager()</mark>
+
+
+
+
+
+
+
 # Some issues
 - [You may need to add u'127.0.0.1' to ALLOWED_HOSTS](https://stackoverflow.com/questions/57545934/you-may-need-to-add-u127-0-0-1-to-allowed-hosts)
 
@@ -269,4 +374,5 @@ admin.site.register(Post, PostAdmin)
 - [Django 4 By Example](Django/source_file/Django_4_By_Example_Fourth_Edition_page61.pdf)
 - [How to show all fields of model in admin page?](https://stackoverflow.com/questions/10543032/how-to-show-all-fields-of-model-in-admin-page)
 - [More of one prepopulated_fields for django admin](https://stackoverflow.com/questions/52247181/more-of-one-prepopulated-fields-for-django-admin)
+- [Django Models - Official Website](https://docs.djangoproject.com/en/4.2/ref/models/)
 - 

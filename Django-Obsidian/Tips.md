@@ -48,12 +48,9 @@ For more information see this link : [What is middleware](https://www.redhat.com
 
 
 
-
-
-
-
 # Other Resources 
 
 - [Python Enum](https://docs.python.org/3/library/enum.html)
 - [Django Enum](https://docs.djangoproject.com/en/4.2/ref/models/fields/#enumeration-types)
+- [Can I move a virtualenv?](https://stackoverflow.com/questions/32407365/can-i-move-a-virtualenv)
 - 

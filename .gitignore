@@ -15,4 +15,4 @@ migrations
 # Ignore log files
 *.log
 
-db.sqlite3
+BlogProject/db.sqlite3
