@@ -9,7 +9,7 @@ class PostAdmin(admin.ModelAdmin):
     # https://stackoverflow.com/questions/10543032/how-to-show-all-fields-of-model-in-admin-page
     # list_display = list_display = [field.name for field in Post._meta.get_fields()]
 
-    list_display        = ['title','author','publish','status','created','updated']
+    list_display        = ['id','title','author','publish','status','created','updated']
     list_filter         = ['author','status','publish','created']
     list_editable       = ['status']
     search_fields       = ['title','body','slug']

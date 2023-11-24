@@ -365,9 +365,105 @@ post.delete()
 
 
 
+
+## Views
+
+```python
+from django.shortcuts import render,get_object_or_404
+from .models import Post
+
+def post_list(request):
+    # getting all published post
+    all_post = Post.published_manager.all()
+    return render(
+        request,
+        'Blog/post/post_list.xhtml',
+        {'posts':all_post}
+    )
+  
+def post_detail(request,post_id):
+    post = Post.published_manager.get(id==post_id)
+    return render(
+        request,
+        'Blog/post/post_detail.xhtml',
+        {'post':post}
+    )
+```
+
+
+## URLS
+
+- The following code is an example of defining URLs in `urls.py` file in your `Blog` app.
+
+```python
+from django.urls import path
+from .views import post_list,post_detail
+
+# useful links:
+
+# 1. Path converters    : https://docs.djangoproject.com/en/4.2/topics/http/urls/#path-converters
+# 2. re_path()          : https://docs.djangoproject.com/en/4.2/ref/urls/#django.urls.re_path
+# 3. Regular Expression : https://docs.python.org/3/howto/regex.html
+
+app_name = 'Blog'
+
+urlpatterns = [
+    path(''               ,post_list   ,name='post_list'),
+    path('<int:post_id>/' ,post_detail ,name='post_detail')
+]
+```
+
+- In the preceding code, you define an `application namespace` with the  <mark style="background: #BBFABBA6;">app_name</mark>  variable. <mark style="background: #FFF3A3A6;">This allows you to organize URLs by application and use the name when referring to them</mark>.
+
+- <mark style="background: #FFF3A3A6;">Creating a urls.py file for each application is the best way to make your applications reusable by other projects.</mark>
+
+Then you can add app's URLs to main project. see the following code:
+
+```python
+"""
+URL configuration for BlogProject project.
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/4.2/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+
+from django.contrib import admin
+from django.urls import path,include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    # importing all `Blog` app urls
+    path('Blog/', include('Blog.urls',namespace='Blog'))
+]
+```
+
+- The new URL patterns defined with include refers to the URL patterns defined in the blog application so that they are included under the `Blog/` path. <mark style="background: #FFF3A3A6;">You include these patterns under the  namespace blog. Namespaces have to be unique across your entire project</mark>.
+- <mark style="background: #FFF3A3A6;">you will refer to your blog URLs easily by using the namespace followed by a colon and the URL name</mark>, for example, `Blog:post_list` and `Blog:post_detail`.
+
+## Django request/response in one view
+
+![[Pasted image 20231124213633.png|900]]
+
+Let’s review the Django request/response process: 
+1. A web browser requests a page by its URL, for example,`https://domain.com/blog/33/`. The web server receives the HTTP request and passes it over to Django. 
+2. <mark style="background: #BBFABBA6;">Django runs through each URL patterns defined in the URL patterns configuration. The framework checks each patterns against the given URL path, in order of appearance, and stops at the first one that matches the requested URL</mark>. In this case, the patterns `/blog/<id>/` matches the path` /blog/33/`. 
+3.  Django imports the view of the matching URL patterns and executes it, passing an instance of the `HttpRequest` class and the keyword or positional arguments. The view uses the models to retrieve information from the database. Using the Django ORM `QuerySets` are translated into SQL and executed in the database. 
+4. The view uses the render() function to render an HTML template passing the Post object as a context variable. 
+5. The rendered content is returned as a `HttpResponse` object by the view with the text/html content type by default.
+
+
 # Some issues
 - [You may need to add u'127.0.0.1' to ALLOWED_HOSTS](https://stackoverflow.com/questions/57545934/you-may-need-to-add-u127-0-0-1-to-allowed-hosts)
-
 
 # Resources
 
@@ -375,4 +471,7 @@ post.delete()
 - [How to show all fields of model in admin page?](https://stackoverflow.com/questions/10543032/how-to-show-all-fields-of-model-in-admin-page)
 - [More of one prepopulated_fields for django admin](https://stackoverflow.com/questions/52247181/more-of-one-prepopulated-fields-for-django-admin)
 - [Django Models - Official Website](https://docs.djangoproject.com/en/4.2/ref/models/)
+- [Path converters](https://docs.djangoproject.com/en/4.2/topics/http/urls/#path-converters)
+- [re_path](https://docs.djangoproject.com/en/4.2/ref/urls/#django.urls.re_path)
+- [The Django template language](https://docs.djangoproject.com/en/4.1/ref/templates/language/)
 - 
