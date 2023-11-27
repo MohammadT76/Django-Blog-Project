@@ -8,16 +8,21 @@
 
 
 {% block body%}
-    <h1>List of all published post</h1>
+    <h1> - List of all published post</h1>
     {% for post in posts %}
-        <h2>
-            <a href="{% url 'Blog:post_detail' post.id %}">
-                {{ post.title }}
-            </a>
-        </h2>
-        <p class="date">
-            Published {{ post.publish }} by {{ post.author }}
-        </p>
-        {{ post.body|truncatewords:30|linebreaks }}
+        <ul>
+            <h2>
+                <a href="{{ post.get_absolute_url }}"> 
+                    {{ post.title }}
+                </a>
+            </h2>
+            <p class="date">
+                Published {{ post.publish }} by {{ post.author }}
+            </p>
+            {{ post.body|truncatewords:30|linebreaks }}
+        </ul>
     {% endfor %}
+
+    {% include 'pagination.xhtml' with page_obj=posts %}
+    
 {% endblock %}

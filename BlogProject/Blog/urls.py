@@ -11,5 +11,6 @@ app_name = 'Blog'
 
 urlpatterns = [
     path(''               ,post_list   ,name='post_list'),
-    path('<int:post_id>/' ,post_detail ,name='post_detail')
+    # path('<int:post_id>/' ,post_detail ,name='post_detail')
+    path('<int:post_year>/<int:post_month>/<int:post_day>/<slug:post_slug>/' ,post_detail ,name='post_detail')
 ]

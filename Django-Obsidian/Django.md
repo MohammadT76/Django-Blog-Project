@@ -461,6 +461,75 @@ Let’s review the Django request/response process:
 4. The view uses the render() function to render an HTML template passing the Post object as a context variable. 
 5. The rendered content is returned as a `HttpResponse` object by the view with the text/html content type by default.
 
+- Note: You can using all URLs globally. How can you ? see the following example)
+
+```python
+Blog_app:post_detail
+```
+
+- <mark style="background: #FFF3A3A6;">We have used the blog  namespace `Blog_app` that defined in the main URL (main project URL file) followed by a colon and the URL name `post_detail`.</mark>
+
+- If you adding `get_absolute_url` to your model , you can use it with the following format:
+
+```html
+<a href="{% url 'Blog_app:post_detail' post.id %}">
+<a href="{{ post.get_absolute_url }}">
+```
+- `Blog_app`      : namespace (that defined in main the project's URLs)
+- `post_detail` : URL that defined in Blog app
+
+
+# Other Tips
+
+- Basic Pagination Template : 
+```html
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+```
+
+- Using the above template in another template:
+```html
+{% extends 'Blog/base.xhtml' %}
+
+{% block title %}
+    <h1>
+        Blog List
+    </h1>
+{% endblock %}
+
+{% block body%}
+    <h1> - List of all published post</h1>
+    {% for post in posts %}
+        <ul>
+            <h2>
+                <a href="{{ post.get_absolute_url }}">
+                    {{ post.title }}
+                </a>
+            </h2>
+            <p class="date">
+                Published {{ post.publish }} by {{ post.author }}
+            </p>
+            {{ post.body|truncatewords:30|linebreaks }}
+        </ul>
+    {% endfor %}
+    {% include 'pagination.xhtml' with page_obj=posts %}
+{% endblock %}
+```
+
+- <mark style="background: #FFF3A3A6;">{% include 'pagination.xhtml' with page_obj=posts %}</mark> : The `{% include %}` template tag loads the given template and renders it using the current template context. We use with to pass additional context variables to the template. The pagination template uses the `page_obj` variable to render, while the Page object that we pass from our view to the template is called `posts`.
 
 # Some issues
 - [You may need to add u'127.0.0.1' to ALLOWED_HOSTS](https://stackoverflow.com/questions/57545934/you-may-need-to-add-u127-0-0-1-to-allowed-hosts)
@@ -474,4 +543,6 @@ Let’s review the Django request/response process:
 - [Path converters](https://docs.djangoproject.com/en/4.2/topics/http/urls/#path-converters)
 - [re_path](https://docs.djangoproject.com/en/4.2/ref/urls/#django.urls.re_path)
 - [The Django template language](https://docs.djangoproject.com/en/4.1/ref/templates/language/)
+- [What is reverse()?](https://stackoverflow.com/questions/11241668/what-is-reverse)
+- [Pagination](https://docs.djangoproject.com/en/4.2/topics/pagination/)
 - 

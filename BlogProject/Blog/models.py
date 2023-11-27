@@ -1,6 +1,7 @@
 from django.db                  import models
 from django.utils               import timezone
 from django.contrib.auth.models import User
+from django.urls                import reverse
 
 # adding a customize manager for published post
 class PublishedManagerCustom(models.Manager):
@@ -11,7 +12,8 @@ class Post(models.Model):
     title   = models.CharField(max_length=300)
     slug    = models.SlugField(max_length=300,
                                help_text='Slug is a field in autocomplete mode, but if you want you can modify its contents',
-                               verbose_name='Slug',unique=True)
+                               verbose_name='Slug',
+                               unique_for_date='publish')
     body    = models.TextField()
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
@@ -56,4 +58,11 @@ class Post(models.Model):
     # when you call an object from this class , object's title shows
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('Blog_app:post_detail',
+                        args=[self.publish.year,
+                              self.publish.month,
+                              self.publish.day,
+                              self.slug])
 
